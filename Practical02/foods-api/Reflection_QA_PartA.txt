@@ -1,0 +1,8 @@
+Reflection
+I learned that APIs like REST are simple for developers
+REST is highly scalable and seamless in various applications, and is stateless without any information lacked
+
+Q&A
+POST is used as the method for creating fresh resources/data, when the URL is not known or the data does not directly correspond to others
+PUT is used for updating data completely with new data, especially at a known URL
+When updating a non-existent resource, the status code 404 is returned.

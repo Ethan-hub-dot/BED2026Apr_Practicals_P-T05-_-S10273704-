@@ -1,0 +1,33 @@
+app.use(express.json())
+This function parses incoming JSON data, in this case the details of food, and populates the req.body property with these data. Developers can then easily access and manipulate it in route handling.
+
+req.body
+Contains key-value pairs submitted in requests to web applications. It can simplify processes like form submissions or any other form of data passed in the body of a request.
+
+req.query
+Holds the query parameters from URLs which allows access to optional data in the form of key-value pairs. The optional data usually appears after a question mark in the URL.
+
+req.params.id
+This is a property of the req.params object, normally defaulted to {}. In the food api, it is used in DELETE or PUT requests to identify certain foods in the array and perform the necessary action on them.
+
+HTTP methods
+HTTP methods are made up of a request line, header with information about content types and authorization details, and body with the data to be sent to the server.
+
+POST - Create
+New data is created in the form of key-value pairs or arrays and uploaded to a built-in database. For example, defining a new food item (apple) with variables like calories and pushing it into the in-memory array called "foods". A successful response is returned provided there is no unfilled variable. 
+
+GET - Read
+Retrieves information from a database or in-memory array. All items are returned unless their exact properties (like id or name) are queried.
+
+PUT - Update
+Searches for existing items in a database and updates them as programmed. In the food api, querying the id of the apple item in a PUT method and passing different raw data with a different name and calories count (banana, 105) will update those properties.
+
+DELETE - Delete
+Searches for existing items in a database and removes them permanently.
+
+HTTP codes
+200 OK - Indicates a successful response; the server has returned the data as requested. There were no errors in processing.
+201 Created - A POST request has successfully created a new resource.
+400 Bad Request - The server is unable to process the request due to a client-side issue, either mistakes are present in syntax or the URL
+404 Not Found - The server could not locate the requested resource, commonly occurs due to deleted pages
+500 - The server encountered a problem that prevented it from fulfilling the request
