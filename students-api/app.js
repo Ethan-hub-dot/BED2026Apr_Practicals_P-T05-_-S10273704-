@@ -33,18 +33,18 @@ process.on("SIGINT", async () => {
 
 // --- GET Routes  ---
 
-// GET all books
-app.get("/books", async (req, res) => {
+// GET all students
+app.get("/students", async (req, res) => {
   let connection; // Declare connection outside try for finally block
   try {
     connection = await sql.connect(dbConfig); // Get the database connection
-    const sqlQuery = `SELECT id, title, author FROM Books`; // Select specific columns
+    const sqlQuery = `SELECT id, name, address FROM Students`; // Select specific columns
     const request = connection.request();
     const result = await request.query(sqlQuery);
     res.json(result.recordset); // Send the result as JSON
   } catch (error) {
-    console.error("Error in GET /books:", error);
-    res.status(500).send("Error retrieving books"); // Send a 500 error on failure
+    console.error("Error in GET /students:", error);
+    res.status(500).send("Error retrieving students"); // Send a 500 error on failure
   } finally {
     if (connection) {
       try {
@@ -56,28 +56,28 @@ app.get("/books", async (req, res) => {
   }
 });
 
-// GET book by ID
-app.get("/books/:id", async (req, res) => {
-  const bookId = parseInt(req.params.id);
-  if (isNaN(bookId)) {
-    return res.status(400).send("Invalid book ID");
+// GET student by ID
+app.get("/students/:id", async (req, res) => {
+  const studentId = parseInt(req.params.id);
+  if (isNaN(studentId)) {
+    return res.status(400).send("Invalid student ID");
   }
 
   let connection;
   try {
     connection = await sql.connect(dbConfig); // Get the database connection
-    const sqlQuery = `SELECT id, title, author FROM Books WHERE id = @id`;
+    const sqlQuery = `SELECT id, name, address FROM Students WHERE id = @id`;
     const request = connection.request();
-    request.input("id", bookId); // Bind the id parameter
+    request.input("id", studentId); // Bind the id parameter
     const result = await request.query(sqlQuery);
 
     if (!result.recordset[0]) {
-      return res.status(404).send("Book not found");
+      return res.status(404).send("Student not found");
     }
-    res.json(result.recordset[0]); // Send the book data as JSON
+    res.json(result.recordset[0]); // Send the student data as JSON
   } catch (error) {
-    console.error(`Error in GET /books/${bookId}:`, error);
-    res.status(500).send("Error retrieving book");
+    console.error(`Error in GET /students/${studentId}:`, error);
+    res.status(500).send("Error retrieving student");
   } finally {
     if (connection) {
       try {
