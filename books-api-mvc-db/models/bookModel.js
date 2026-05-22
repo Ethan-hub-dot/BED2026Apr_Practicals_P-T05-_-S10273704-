@@ -1,12 +1,12 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
-// Get all students
-async function getAllStudents() {
+// Get all books
+async function getAllBooks() {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "SELECT id, name, address FROM Students";
+    const query = "SELECT id, title, author FROM Books";
     const result = await connection.request().query(query);
     return result.recordset;
   } catch (error) {
@@ -23,18 +23,18 @@ async function getAllStudents() {
   }
 }
 
-// Get student by ID
-async function getStudentById(id) {
+// Get book by ID
+async function getBookById(id) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "SELECT id, name, address FROM Students WHERE id = @id";
+    const query = "SELECT id, title, author FROM Books WHERE id = @id";
     const request = connection.request();
     request.input("id", id);
     const result = await request.query(query);
 
     if (result.recordset.length === 0) {
-      return null; // Student not found
+      return null; // Book not found
     }
 
     return result.recordset[0];
@@ -52,21 +52,20 @@ async function getStudentById(id) {
   }
 }
 
-
-// Create new student
-async function createStudent(studentData) {
+// Create new book
+async function createBook(bookData) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
     const query =
-      "INSERT INTO Students (name, address) VALUES (@name, @address); SELECT SCOPE_IDENTITY() AS id;";
+      "INSERT INTO Books (title, author) VALUES (@title, @author); SELECT SCOPE_IDENTITY() AS id;";
     const request = connection.request();
-    request.input("name", studentData.name);
-    request.input("address", studentData.address);
+    request.input("title", bookData.title);
+    request.input("author", bookData.author);
     const result = await request.query(query);
 
-    const newStudentId = result.recordset[0].id;
-    return await getStudentById(newStudentId);
+    const newBookId = result.recordset[0].id;
+    return await getBookById(newBookId);
   } catch (error) {
     console.error("Database error:", error);
     throw error;
@@ -82,20 +81,20 @@ async function createStudent(studentData) {
 }
 
 
-async function updateStudent(id, studentData) {
+async function updateBook(id, bookData) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
     const query =
-      "UPDATE Students SET name = @name, address = @address WHERE id = @id; SELECT * FROM Students WHERE id = @id;";
+      "UPDATE Books SET title = @title, author = @author WHERE id = @id; SELECT * FROM Books WHERE id = @id;";
     const request = connection.request();
-    request.input("id", studentData.id);
-    request.input("name", studentData.name);
-    request.input("address", studentData.address);
+    request.input("id", id);
+    request.input("title", bookData.title);
+    request.input("author", bookData.author);
     const result = await request.query(query);
 
     if (result.recordset.length === 0) {
-      return null; // Student not found
+      return null; // Book not found
     }
     return result.recordset[0];
   } catch (error) {
@@ -112,11 +111,11 @@ async function updateStudent(id, studentData) {
   }
 }
 
-async function deleteStudent(id) {
+async function deleteBook(id) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "DELETE FROM Students WHERE id = @id";
+    const query = "DELETE FROM Books WHERE id = @id";
     const request = connection.request();
     request.input("id", id);
     await request.query(query);
@@ -135,9 +134,9 @@ async function deleteStudent(id) {
 }
 
 module.exports = {
-  getAllStudents,
-  getStudentById,
-  createStudent,
-  updateStudent,
-  deleteStudent,
+  getAllBooks,
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook,
 };
