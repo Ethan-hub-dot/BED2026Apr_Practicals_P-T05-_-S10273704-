@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Student</title>
+
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+
+      form div {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"] {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f5f5f5;
+      }
+
+      #message {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 id="studentTitle">Details of Student</h1>
+
+    <p><a href="index.html">Back to Students List</a></p>
+
+    <div id="loadingMessage">Loading student data...</div>
+
+    <form id="editStudentForm" style="display: none;">
+      <input type="hidden" id="studentId" />
+
+      <div>
+        <label for="editName">Name:</label>
+        <input
+          type="text"
+          id="editName"
+          name="name"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label for="editAddress">Address:</label>
+        <input
+          type="text"
+          id="editAddress"
+          name="address"
+          readonly
+        />
+      </div>
+    </form>
+
+    <div id="message"></div>
+
+    <script src="view-script.js"></script>
+  </body>
+</html>

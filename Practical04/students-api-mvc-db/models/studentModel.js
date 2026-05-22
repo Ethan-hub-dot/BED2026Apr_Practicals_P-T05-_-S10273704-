@@ -59,13 +59,12 @@ async function createStudent(studentData) {
   try {
     connection = await sql.connect(dbConfig);
     const query =
-      "INSERT INTO Students (name, address) VALUES (@name, @address); SELECT SCOPE_IDENTITY() AS id;";
+      "INSERT INTO Students (name, address) VALUES (@name, @address); SELECT CAST(SCOPE_IDENTITY() AS INT) AS id;";
     const request = connection.request();
     request.input("name", studentData.name);
     request.input("address", studentData.address);
     const result = await request.query(query);
-
-    const newStudentId = result.recordset[0].id;
+    const newStudentId = parseInt(result.recordset[0].id);
     return await getStudentById(newStudentId);
   } catch (error) {
     console.error("Database error:", error);
@@ -89,7 +88,7 @@ async function updateStudent(id, studentData) {
     const query =
       "UPDATE Students SET name = @name, address = @address WHERE id = @id; SELECT * FROM Students WHERE id = @id;";
     const request = connection.request();
-    request.input("id", studentData.id);
+    request.input("id", id);
     request.input("name", studentData.name);
     request.input("address", studentData.address);
     const result = await request.query(query);

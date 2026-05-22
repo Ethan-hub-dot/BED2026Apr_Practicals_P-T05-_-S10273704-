@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Book</title>
+
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+
+      #bookDetails {
+        margin-top: 20px;
+      }
+
+      .book-item {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+
+      .book-item h2 {
+        margin-top: 0;
+      }
+
+      #message {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+
+      .back-btn {
+        margin-top: 15px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Book Details</h1>
+
+    <div id="message"></div>
+
+    <div id="bookDetails">
+
+    </div>
+
+    <button class="back-btn" onclick="window.location.href='index.html'">
+      Back to Books List
+    </button>
+
+    <script src="view-script.js"></script>
+  </body>
+</html>

@@ -14,7 +14,7 @@ createStudentForm.addEventListener("submit", async (event) => {
 
   const newStudentData = {
     name: nameInput.value,
-    address: addressInput.value,
+    address: addressInput.value
   };
 
   try {

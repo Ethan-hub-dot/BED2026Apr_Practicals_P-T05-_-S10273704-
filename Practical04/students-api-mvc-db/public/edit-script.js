@@ -1,5 +1,5 @@
 // Get references to the elements
-const editBookForm = document.getElementById("editBookForm");
+const editStudentForm = document.getElementById("editStudentForm");
 const loadingMessageDiv = document.getElementById("loadingMessage"); // Element to show loading state
 const messageDiv = document.getElementById("message"); // Element to display messages (success/error)
 const studentIdInput = document.getElementById("studentId"); // Hidden input to store the student ID

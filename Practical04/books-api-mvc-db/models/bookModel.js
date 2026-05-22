@@ -63,7 +63,6 @@ async function createBook(bookData) {
     request.input("title", bookData.title);
     request.input("author", bookData.author);
     const result = await request.query(query);
-
     const newBookId = result.recordset[0].id;
     return await getBookById(newBookId);
   } catch (error) {
