@@ -63,6 +63,7 @@ async function createStudent(studentData) {
     const request = connection.request();
     request.input("name", studentData.name);
     request.input("address", studentData.address);
+    console.log(studentData);
     const result = await request.query(query);
     const newStudentId = parseInt(result.recordset[0].id);
     return await getStudentById(newStudentId);

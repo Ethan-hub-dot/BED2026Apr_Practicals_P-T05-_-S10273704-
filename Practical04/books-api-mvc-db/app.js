@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const bookController = require("./controllers/bookController");
+const userController = require("./controllers/userController");
+
 const {
   validateBook,
   validateBookId,
@@ -32,6 +34,13 @@ app.post("/books", validateBook, bookController.createBook); // Use validateBook
 app.put("/books/:id", validateBookId, validateBook, bookController.updateBook); // Use both middlewares
 app.delete("/books/:id", validateBookId, bookController.deleteBook); // Use validateBookId middleware
 // Add routes for PUT/DELETE if implemented, applying appropriate middleware
+app.post("/users", userController.createUser); // Create user
+app.get("/users/search", userController.searchUsers);
+app.get("/users", userController.getAllUsers); // Get all users
+app.get("/users/:id", userController.getUserById); // Get user by ID
+app.put("/users/:id", userController.updateUser); // Update user
+app.delete("/users/:id", userController.deleteUser); // Delete user
+app.get("/users/with-books", userController.getUsersWithBooks);
 
 // Start server
 app.listen(port, () => {
