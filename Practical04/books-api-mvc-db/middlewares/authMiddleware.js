@@ -18,12 +18,13 @@ function verifyJWT(req, res, next) {
         // Only librarians can create books
         "POST /books": ["librarian"], 
         // Anyone can view books
-        "GET /books": ["member", "librarian"], 
+        "GET /books": ["student", "librarian"], 
         // Only librarians can update availability
         "PUT /books/[0-9]+/availability": ["librarian"], 
     };
 
-    const requestedEndpoint = `${req.method} ${req.url}`; // Include method in endpointl;
+const requestedEndpoint =
+    `${req.method} ${req.baseUrl}${req.path}`;; // Include method in endpointl;
     const userRole = decoded.role;
 
     const authorizedRole = Object.entries(authorizedRoles).find(
@@ -34,7 +35,7 @@ function verifyJWT(req, res, next) {
     );
 
     app.get("/books", bookController.getAllBooks);
-    app.put("/books/:id/availability", bookController.updateBookAvailability, verifyJWT); // Use validateBookId middleware
+    app.put("/books/:id/availability", verifyJWT, bookController.updateBookAvailability); // Use validateBookId middleware
 
     
 
