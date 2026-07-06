@@ -33,8 +33,11 @@ app.get("/books/:id", validateBookId, bookController.getBookById); // Use valida
 app.post("/books", validateBook, bookController.createBook); // Use validateBook middleware
 app.put("/books/:id", validateBookId, validateBook, bookController.updateBook); // Use both middlewares
 app.delete("/books/:id", validateBookId, bookController.deleteBook); // Use validateBookId middleware
+app.put("/books/:id/availability", validateBookId, bookController.updateBookAvailability); // Use validateBookId middleware
 // Add routes for PUT/DELETE if implemented, applying appropriate middleware
 app.post("/users", userController.createUser); // Create user
+app.post("/users/register", userController.registerUser); // Register user
+app.post("/users/login", userController.loginUser); // Login user
 app.get("/users/search", userController.searchUsers);
 app.get("/users", userController.getAllUsers); // Get all users
 app.get("/users/:id", userController.getUserById); // Get user by ID

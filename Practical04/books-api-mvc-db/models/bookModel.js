@@ -110,6 +110,37 @@ async function updateBook(id, bookData) {
   }
 }
 
+//Update availability
+async function updateBookAvailability(id, bookData) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const query =
+      "UPDATE Books SET availability = @availability WHERE id = @id; SELECT * FROM Books WHERE id = @id;";
+      "SELECT FROM Books WHERE id = @id;";
+    const request = connection.request();
+    request.input("id", id);
+    request.input("availability", bookData.availability);
+    const result = await request.query(query);
+
+    if (result.recordset.length === 0) {
+      return null; // Book not found
+    }
+    return result.recordset[0];
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("Error closing connection:", err);
+      }
+    }
+  }
+}
+
 async function deleteBook(id) {
   let connection;
   try {
@@ -138,4 +169,5 @@ module.exports = {
   createBook,
   updateBook,
   deleteBook,
+  updateBookAvailability,
 };

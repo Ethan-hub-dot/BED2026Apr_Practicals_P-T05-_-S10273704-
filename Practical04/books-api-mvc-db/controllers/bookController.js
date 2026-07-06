@@ -60,10 +60,22 @@ async function deleteBook(req, res) {
   }
 }
 
+async function updateBookAvailability(req, res){
+  try {
+    const id = parseInt(req.params.id);
+    const updatedBook = await bookModel.updateBookAvailability(id, req.body);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Error updating book availability" });
+  }
+}
+
 module.exports = {
   getAllBooks,
   getBookById,
   createBook,
   updateBook,
   deleteBook,
+  updateBookAvailability,
 };

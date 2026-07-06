@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const bcrypt = require("bcrypt");
 
 // Get all users
 async function getAllUsers(req, res) {
@@ -26,6 +27,44 @@ async function getUserById(req, res) {
   } catch (error) {
     console.error("Controller error:", error);
     res.status(500).json({ error: "Error retrieving user" });
+  }
+}
+
+
+
+//Register user
+async function registerUser(req, res) {
+  try {
+    const { username, role, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = await User.createUser({ username, role, password: hashedPassword });
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Error registering user" });
+  }
+}
+
+async function loginUser(req, res) {
+  try{
+    const { username, password } = req.body;
+    const user = await User.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    console.log("User retrieved in controller:", user); // Debug log to check retrieved user
+    const passwordMatch = await bcrypt.compare(password, user.passwordhash);
+
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+    res.json({ message: "Login successful" });
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Error logging in" });
   }
 }
 
@@ -96,9 +135,11 @@ async function getUsersWithBooks(req, res) {
 module.exports = {
   getAllUsers,
   getUserById,
+  registerUser,
   createUser,
   updateUser,
   deleteUser,
   searchUsers,
   getUsersWithBooks,
+  loginUser, // Export loginUser function
 };

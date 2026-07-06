@@ -6,7 +6,7 @@ async function getAllUsers() {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "SELECT id, username, email FROM Users";
+    const query = "SELECT user_id, username, email FROM Users";
     const result = await connection.request().query(query);
     return result.recordset;
   } catch (error) {
@@ -28,9 +28,9 @@ async function getUserById(id) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "SELECT id, username, email FROM Users WHERE id = @id";
+    const query = "SELECT user_id, username, email FROM Users WHERE user_id = @user_id";
     const request = connection.request();
-    request.input("id", id);
+    request.input("user_id", id);
     const result = await request.query(query);
 
     if (result.recordset.length === 0) {
@@ -58,13 +58,17 @@ async function createUser(userData) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
+
+    console.log("Creating user with data:", userData); // Debugging line
     const query =
-      "INSERT INTO Users (username, email) VALUES (@username, @email); SELECT SCOPE_IDENTITY() AS id;";
+      "INSERT INTO Users (username, email, passwordhash, role) VALUES (@username, @email, @passwordhash, @role); SELECT SCOPE_IDENTITY() AS user_id;";
     const request = connection.request();
     request.input("username", userData.username);
     request.input("email", userData.email);
+    request.input("passwordhash", userData.password); // Assuming you have a password hash
+    request.input("role", userData.role); // Assuming you have a role field
     const result = await request.query(query);
-    const newUserId = result.recordset[0].id;
+    const newUserId = result.recordset[0].user_id;
     return await getUserById(newUserId);
   } catch (error) {
     console.error("Database error:", error);
@@ -86,9 +90,9 @@ async function updateUser(id, userData) {
   try {
     connection = await sql.connect(dbConfig);
     const query =
-      "UPDATE Users SET username = @username, email = @email WHERE id = @id; SELECT * FROM Users WHERE id = @id;";
+      "UPDATE Users SET username = @username, email = @email WHERE user_id = @user_id; SELECT * FROM Users WHERE user_id = @user_id;";
     const request = connection.request();
-    request.input("id", id);
+    request.input("user_id", id);
     request.input("username", userData.username);
     request.input("email", userData.email);
     const result = await request.query(query);
@@ -115,9 +119,9 @@ async function deleteUser(id) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "DELETE FROM Users WHERE id = @id";
+    const query = "DELETE FROM Users WHERE user_id = @user_id";
     const request = connection.request();
-    request.input("id", id);
+    request.input("user_id", id);
     await request.query(query);
   } catch (error) {
     console.error("Database error:", error);
@@ -170,10 +174,10 @@ async function getUsersWithBooks() {
     connection = await sql.connect(dbConfig);
 
     const query = `
-    SELECT u.id AS user_id, u.username, u.email, b.id AS book_id, b.title, b.author
+    SELECT u.user_id, u.username, u.email, b.book_id, b.title, b.author
     FROM Users u
-    LEFT JOIN UserBooks ub ON ub.user_id = u.id
-    LEFT JOIN Books b ON ub.book_id = b.id
+    LEFT JOIN UserBooks ub ON ub.user_id = u.user_id
+    LEFT JOIN Books b ON ub.book_id = b.book_id
     ORDER BY u.username;
     `;
 
@@ -255,6 +259,32 @@ async function getUsersWithBooks() {
   }
 }
 
+async function getUserByUsername(username) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const query = "SELECT * FROM Users WHERE username = @username";
+    const request = connection.request();
+    request.input("username", username);
+    const result = await request.query(query);
+    return result.recordset[0];
+  } catch (error) {
+    console.error("Database error in getUserByUsername:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(
+          "Error closing connection after getUserByUsername:",
+          err
+        );
+      }
+    }
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -263,5 +293,7 @@ module.exports = {
   deleteUser,
   searchUsers,
   getUsersWithBooks,  
+  registerUser: createUser, // Alias for clarity in controller
+  getUserByUsername, // Export the function to check for existing usernames
 };
 
